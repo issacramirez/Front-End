@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fondamento&display=swap" rel="stylesheet">
+    <title>Tarea 5</title>
+
+    <!-- estilos css -->
+    <style>
+        * {
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            background: #111a29;
+            color: #fff;
+        }
+
+        h1 {
+            font-family: 'Fondamento';
+            font-size: 45px;
+        }
+
+        #main {
+            display: block;
+            margin: 0 auto;
+            width: 400px;
+            text-align: center;
+            display: inline-flexbox;
+            align-items: center;
+
+        }
+
+        #main h1 {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        ::selection {
+            background: #e04c22;
+            color: #fff;
+        }
+
+        form {
+            display: block;
+            width: 100%;
+            text-align: center;
+            display: block;
+        }
+
+        input,
+        textarea {
+            font-family: 'Fondamento';
+            color: #fff;
+            border: 0;
+            outline: 0;
+            background: #000266;
+            border-radius: 1px;
+            font-size: 25px;
+            margin: 10px auto;
+            width: 95%;
+            display: block;
+            max-height: 100px;
+        }
+
+        textarea {
+            max-height: 95%;
+            height: 100px;
+        }
+
+        input[type=submit] {
+            border: 3.5px inset #fff;
+            border-radius: 25px;
+            height: auto;
+            width: auto;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        input[type=submit]:hover {
+            border: 3.5px outset #fff;
+        }
+
+        input[type=text] {
+            border: 3.5px inset #fff;
+            border-radius: 50px;
+            width: 400px;
+            height: 135px;
+            text-align: center;
+        }
+
+        input[type=text]:hover {
+            border: 3.5px outset #fff;
+        }
+
+        input[type=number] {
+            border: 3.5px inset #fff;
+            border-radius: 25px;
+            width: 400px;
+            height: 50px;
+            text-align: center;
+        }
+
+        input[type=number]:hover {
+            border: 3.5px outset #fff;
+        }
+
+        input[type=button] {
+            border: 3.5px inset #fff;
+            padding: 10px;
+            border-radius: 25px;
+        }
+
+        input[type=button]:hover {
+            border: 3.5px outset #fff;
+        }
+
+        #status {
+            display: inline-block;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+        }
+
+        #status,
+        img {
+            width: 20px;
+            height: 20px;
+        }
+
+        #cajaCookies {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        #divCookies {
+            margin: 10px;
+            width: 400px;
+            height: auto;
+            text-align: center;
+            align-items: center;
+        }
+
+        button {
+            border: 3.5px inset #fff;
+            font-family: 'Fondamento';
+            font-size: 25px;
+            padding: 5px 5px;
+            margin-bottom: 10px;
+            color: #fff;
+            background: #000;
+            border-radius: 25px;
+        }
+
+        button:hover {
+            border: 3.5px outset #fff;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- se montara en un servidor en la computadora -->
+
+    <div id="main">
+        <!-- inicio del main -->
+        <h1>Formulario</h1>
+        <form action="" name="formulario" id="formulario">
+            <!-- formulario para capturar las cookies -->
+            <input type="text" name="nombre" placeholder="Nombre de la cookie" required>
+            <input type="text" placeholder="Inserte las cookies" name="values" required></input>
+            <input type="number" name="expires" placeholder="Tiempo de expiracion" required>
+            <!-- funcion que agrega las cookies -->
+            <input type="submit" value="Enviar galletas" onclick="setCookie(nombre.value, values.value, expires.value)">
+            <!-- funcion para ver las cookies del navegador -->
+            <input type="button" value="Ver Cookies en navegador" onclick="verCookiesNavegador()">
+        </form>
+
+        <div id="divCookies"></div> <!-- div para insertar las cookies en la pagina -->
+
+        <!-- llamar la funcion de geolocalizacion -->
+        <button class="nd" type="button" onclick="verPosicion()">Saber mi localización</button>
+        <div id="indx"></div>
+        <div id="lat"></div>
+        <div id="lon"></div>
+        <div id="acc"></div>
+
+    </div> <!-- fin del main -->
+
+    <script>
+
+        // funcion que guarda las cookies 
+        function setCookie(cname, cvalue, exphours) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exphours * 60 * 60 * 1000)); // se guarda la hora ingresada en horas
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + exphours + ";path=/"; // aqui se guarda la cookie
+        }
+
+        // funcione que hace que se van las cookies del navegador
+        function verCookiesNavegador() {
+            var cookies = document.cookie;
+            var cajaCookies = document.getElementById('divCookies'); // traen el div donde se van a ver la cookies
+            // si ya hay cookies, entonces que vacíe el div
+            if (cajaCookies != null) {
+                document.getElementById('divCookies').innerHTML = "";
+            }
+            var datos = document.createTextNode(cookies);
+            cajaCookies.appendChild(datos); // agrega el div con las cookies
+        }
+
+        function verPosicion() {
+
+            var options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            function success(pos) {
+                var crd = pos.coords;
+
+                document.getElementById('indx').innerHTML = "Las Coordenadas son:";
+                document.getElementById('lat').innerHTML = "Latitud: " + crd.latitude;
+                document.getElementById('lon').innerHTML = "Longitud: " + crd.longitude;
+                document.getElementById('acc').innerHTML = "Mas o menos: " + crd.accuracy + " metros";
+
+            };
+
+            function error(err) {
+                console.warn('ERROR(' + err.code + '): ' + err.message);
+            };
+
+            // obtiene la posicion
+            navigator.geolocation.getCurrentPosition(success, error, options);
+        }
+
+    </script>
+</body>
+
+</html>
